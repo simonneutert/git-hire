@@ -27,7 +27,7 @@ https://knowyourmeme.com/memes/this-is-fine
 
 make sure your ENV has the `GITHUB_TOKEN` at hand.  
 I do it like this:  
-in a terminal I `$ export GITHUB_TOKEN="<my-token-here>"`  
+in a terminal enter `$ export GITHUB_TOKEN="<my-token-here>"`  
 then, from that terminal open your IDE of choice, like  
 `$ code .`
 
@@ -39,7 +39,7 @@ or have in your `.zshrc` 🤗 or whatever your shell loads at start
 
 ### Download profiles
 
-`$ bb git-hire.clj <location-like-city-or-country>`
+`$ bb git-hire.clj <location-like-city-or-country>`  
 `$ bb git-hire.clj <location-like-city-or-country> <language>`
 
 Will save the github profiles as `.edn` into the `profiles` directory.
@@ -50,16 +50,15 @@ Or specify further adding a language, **but** as GitHub support let me know:
 
 So this might not find a PHP dev who switched to Rust recently!  
 Better search by location(s) and then use `$ bb search-keyword "rust"`  
-Search multiple languages in a given location.
-
-`$ bb git-hire.clj <location-like-city-or-country> <language>`
+To highten your chances, finding who you need, search multiple languages in a location.  
+**Watch your rate limits ⚠️**
 
 #### examples
 
 `$ bb git-hire.clj mainz`  
-`$ bb git-hire.clj "Bad Schwalbach"`
-`$ bb git-hire.clj wiesbaden java`
-`$ bb git-hire.clj wiesbaden php`
+`$ bb git-hire.clj "Bad Schwalbach"`  
+`$ bb git-hire.clj wiesbaden java`  
+`$ bb git-hire.clj wiesbaden php`  
 `$ bb git-hire.clj mainz javascript`
 
 ### Search in result files (saved profiles)
@@ -107,10 +106,12 @@ Some stuff you would want to know/read as a beginner.
 
 ### Errors
 
-- REPL fails and outputs `; : Can't set!: *current-length* from non-binding thread user `
+- REPL fails and outputs  
+  `; : Can't set!: *current-length* from non-binding thread user `
 
 `pmap` and `curl` don't play well with each other, don't worry, run the tool from the shell:  
-`bb git-hire.clj berlin ruby`  and off you go
+`bb git-hire.clj berlin ruby`  
+it will fire up some threads 🔥
 
 ### CookBook Babashka
 
