@@ -109,7 +109,8 @@ Some stuff you would want to know/read as a beginner.
 - REPL fails and outputs  
   `; : Can't set!: *current-length* from non-binding thread user `
 
-`pmap` and `curl` don't play well with each other, don't worry, run the tool from the shell:  
+`pmap` and `curl` don't play well with each other in the shell (I guess).  
+Don't worry, run the tool from the shell:  
 `bb git-hire.clj berlin ruby`  
 it will fire up some threads 🔥
 
