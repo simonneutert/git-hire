@@ -40,6 +40,7 @@ or have in your `.zshrc` 🤗 or whatever your shell loads at start
 ### Download profiles
 
 `$ bb git-hire.clj <location-like-city-or-country>`
+`$ bb git-hire.clj <location-like-city-or-country> <language>`
 
 Will save the github profiles as `.edn` into the `profiles` directory.
 
@@ -51,12 +52,15 @@ So this might not find a PHP dev who switched to Rust recently!
 Better search by location(s) and then use `$ bb search-keyword "rust"`  
 Search multiple languages in a given location.
 
-`$ bb git-hire.clj <location-like-city-or-country>`
+`$ bb git-hire.clj <location-like-city-or-country> <language>`
 
 #### examples
 
 `$ bb git-hire.clj mainz`  
 `$ bb git-hire.clj "Bad Schwalbach"`
+`$ bb git-hire.clj wiesbaden java`
+`$ bb git-hire.clj wiesbaden php`
+`$ bb git-hire.clj mainz javascript`
 
 ### Search in result files (saved profiles)
 
