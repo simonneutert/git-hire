@@ -82,19 +82,19 @@ go further, by piping
 
 read many profiles
 
-```clojure
-bb search-keyword ruby | bb -e '(mapv #(edn/read-string (slurp %)) *input*)'
+```bash
+$ bb search-keyword ruby | bb -e '(mapv #(edn/read-string (slurp %)) *input*)'
 ```
 
 map out `name` and `bio` and filter
 
 ```bash
-bb search-keyword ruby |\
-  bb -e '(mapv #(edn/read-string (slurp %)) *input*)' |\
-  bb -e '(mapv #(select-keys % [:name :bio]) *input*)' |\
-  bb -e '(remove #(nil? (:bio %)) *input*)' |\
-  bb -e '(filter #(clojure.string/includes? (clojure.string/lower-case (:bio %)) "apple") *input*)' |\
-  bb -e '(clojure.pprint/pprint *input*)'
+$ bb search-keyword ruby |\
+    bb -e '(mapv #(edn/read-string (slurp %)) *input*)' |\
+    bb -e '(mapv #(select-keys % [:name :bio]) *input*)' |\
+    bb -e '(remove #(nil? (:bio %)) *input*)' |\
+    bb -e '(filter #(clojure.string/includes? (clojure.string/lower-case (:bio %)) "apple") *input*)' |\
+    bb -e '(clojure.pprint/pprint *input*)'
 ```
 
 ## FAQ
@@ -125,7 +125,7 @@ https://github.com/borkdude/jet
 #### transform to JSON
 
 ```bash 
-bb search-keyword ruby |\
-  bb -e '(mapv #(edn/read-string (slurp %)) *input*)' |\
-  jet --to json
+$ bb search-keyword ruby |\
+    bb -e '(mapv #(edn/read-string (slurp %)) *input*)' |\
+    jet --to json
 ```
