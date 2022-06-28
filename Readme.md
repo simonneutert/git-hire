@@ -10,13 +10,13 @@ https://knowyourmeme.com/memes/this-is-fine
 ## Features
 
 - [x] up to 1000 users per city + language combination (sorted by most repositories)
-- [x] if less than 1000 users in a city total, you can download by location
+- [x] if less than 1000 users in a city total, you can download by location only
+- [x] concurrency built-in 🚀
 
 ## planned features
 
 - [ ] get up to 3000 users (not just 1000) 
   - implement automatic bucketing, sliding through the limits
-- [ ] maybe nicer data pipeline (instant write to disc), though more speed can cause hitting the API rate limit early 
 - [ ] tests?! 🧌
 
 ## Prerequisities
