@@ -31,7 +31,7 @@ in a terminal enter `$ export GITHUB_TOKEN="<my-token-here>"`
 then, from that terminal open your IDE of choice, like  
 `$ code .`
 
-or have in your `.zshrc` 🤗 or whatever your shell loads at start
+or have it in your `.zshrc` 🤗 or whatever your shell loads at start
 
 🥳 happy times in the REPL
 
@@ -130,7 +130,8 @@ Some stuff you would want to know/read as a beginner.
 - REPL fails and outputs  
   `; : Can't set!: *current-length* from non-binding thread user `
 
-`pmap` and `curl` don't play well with each other, don't worry, run the tool from the shell:  
+`pmap` and `curl` don't play well with each other in the shell (I guess).  
+Don't worry, run the tool from the shell:  
 `bb git-hire.clj berlin ruby`  
 it will fire up some threads 🔥
 
