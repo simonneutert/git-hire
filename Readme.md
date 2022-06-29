@@ -89,7 +89,17 @@ read many profiles
 $ bb search-keyword ruby | bb -e '(mapv #(edn/read-string (slurp %)) *input*)'
 ```
 
-map out `name` and `bio` and filter
+map out `name` and `bio`, where `bio` is provided
+
+```
+$ bb search-keyword ruby |\
+    bb -e '(mapv #(edn/read-string (slurp %)) *input*)' |\
+    bb -e '(mapv #(select-keys % [:name :bio]) *input*)' |\
+    bb -e '(remove #(nil? (:bio %)) *input*)'
+```
+
+map out `name` and `bio`, where `bio` is provided, filter by bio containing "apple"
+
 
 ```bash
 $ bb search-keyword ruby |\
@@ -99,6 +109,17 @@ $ bb search-keyword ruby |\
     bb -e '(filter #(clojure.string/includes? (clojure.string/lower-case (:bio %)) "apple") *input*)' |\
     bb -e '(clojure.pprint/pprint *input*)'
 ```
+
+what you came here for 🔥 find all hireable
+
+*search-keyword git* is sort of a hack returning all profiles you downloaded at this point
+
+```bash
+$ bb search-keyword git |\
+    bb -e '(mapv #(edn/read-string (slurp %)) *input*)' |\
+    bb -e '(remove #(nil? (:hireable %)) *input*)'
+```
+
 
 ## FAQ
 
