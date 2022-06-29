@@ -31,7 +31,7 @@ in a terminal enter `$ export GITHUB_TOKEN="<my-token-here>"`
 then, from that terminal open your IDE of choice, like  
 `$ code .`
 
-or have in your `.zshrc` 🤗 or whatever your shell loads at start
+or have it in your `.zshrc` 🤗 or whatever your shell loads at start
 
 🥳 happy times in the REPL
 
