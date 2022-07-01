@@ -40,18 +40,22 @@ or have it in your `.zshrc` 🤗 or whatever your shell loads at start
 ### Download profiles
 
 `$ bb git-hire.clj <location-like-city-or-country>`  
-`$ bb git-hire.clj <location-like-city-or-country> <language>`
 
-Will save the github profiles as `.edn` into the `profiles` directory.
-
-Or specify further adding a language, **but** as GitHub support let me know:
-
+Will save the github profiles as `.edn` into the `profiles` directory,  
+**but** as GitHub support let me know:  
 > When using the language qualifier when searching for users, it will only return users where the majority of their repositories use the specified language. (please, see [documentation](https://docs.github.com/en/search-github/searching-on-github/searching-users#search-by-repository-language))
 
-So this might not find a PHP dev who switched to Rust recently!  
-Better search by location(s) and then use `$ bb search-keyword "rust"`  
-To highten your chances, finding who you need, search multiple languages in a location.  
+Specify further adding a language:
+
+`$ bb git-hire.clj <location-like-city-or-country> <language>`
+
+**Be warned!** This might not find a PHP dev who switched to Rust recently, as described by GitHub's Support.
+
+Or if the city is too crowded, try loading mainstream languages for a given city.  
 **Watch your rate limits ⚠️**
+
+After having built a pool of profiles, use  
+`$ bb search-keyword "rust"` and/or see examples given below.
 
 #### examples
 
@@ -119,7 +123,6 @@ $ bb search-keyword git |\
     bb -e '(mapv #(edn/read-string (slurp %)) *input*)' |\
     bb -e '(remove #(nil? (:hireable %)) *input*)'
 ```
-
 
 ## FAQ
 
