@@ -18,6 +18,7 @@ https://knowyourmeme.com/memes/this-is-fine
 - [ ] get up to 3000 users (not just 1000) 
   - implement automatic bucketing, sliding through the limits
 - [ ] tests?! 🧌
+- [ ] speed isn't crucial, but utilizing some of `clojure.core.async` magic could speed things up 10x maybe :thinking:
 
 ## Prerequisities
 
