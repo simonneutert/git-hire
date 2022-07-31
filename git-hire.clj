@@ -3,7 +3,7 @@
 (def auth
   "Sets up the headers for requests
    depending on a set ENV"
-  (let [token (System/getenv "GITHUB_TOKEN")
+  (let [token (System/getenv "GITHUB_HIRE_TOKEN")
         bearer (str "Bearer " token)]
     {:headers {"Accept" "application/vnd.github.v3+json"
                "Authorization" bearer}}))

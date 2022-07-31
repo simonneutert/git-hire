@@ -26,9 +26,9 @@ https://knowyourmeme.com/memes/this-is-fine
 - GitHub API Token ([Personal Access Tokens](https://docs.github.com/en/rest/guides/getting-started-with-the-rest-api#using-personal-access-tokens))
 - Java doesn't hurt, too
 
-make sure your ENV has the `GITHUB_TOKEN` at hand.  
+make sure your ENV has the `GITHUB_HIRE_TOKEN` at hand.  
 I do it like this:  
-in a terminal enter `$ export GITHUB_TOKEN="<my-token-here>"`  
+in a terminal enter `$ export GITHUB_HIRE_TOKEN="<my-token-here>"`  
 then, from that terminal open your IDE of choice, like  
 `$ code .`
 
