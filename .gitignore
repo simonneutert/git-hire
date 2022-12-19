@@ -1,4 +1,8 @@
+
 profiles/**
+
+# direnv
+.envrc
 
 # visual code
 /*.vsix
