@@ -78,6 +78,8 @@ After having built a pool of profiles, use
 
 you might go further, by piping to bb again, unimaginable possibilities...
 
+`$ mkdir rails; cp $(grep -Zril rails profiles) rails`
+
 `$ bb search-keyword "ios" | bb -e '(map #(str/upper-case %) *input*)'`
 
 ### Inspect Profiles (with examples! 🤯)
