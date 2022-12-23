@@ -129,6 +129,28 @@ $ bb search-keyword git |\
     bb -e '(remove #(nil? (:hireable %)) *input*)'
 ```
 
+### Find juniors/new-joiners
+
+```bash
+# using httpie
+GITHUB_HIRE_SINCE_YEAR=2019;
+GITHUB_HIRE_LOCATION=wiesbaden;
+https -A bearer -a ${GITHUB_HIRE_TOKEN} \
+  "https://api.github.com/search/users?q=created%3A%3E${GITHUB_HIRE_SINCE_YEAR}-01-01+location%3A${GITHUB_HIRE_LOCATION}+repos%3A%3E1&type=Users" \
+  "Accept":"application/vnd.github.v3+json"
+```
+
+```bash
+# using httpie and jq
+GITHUB_HIRE_SINCE_YEAR=2019;
+GITHUB_HIRE_LOCATION=wiesbaden;
+https -A bearer -a ${GITHUB_HIRE_TOKEN} \
+  "https://api.github.com/search/users?q=created%3A%3E${GITHUB_HIRE_SINCE_YEAR}-01-01+location%3A${GITHUB_HIRE_LOCATION}+repos%3A%3E1&type=Users" \
+  "Accept":"application/vnd.github.v3+json" |\
+  jq '.items | map(select(.type == "User")) | .[] |.repos_url'
+```
+
+
 ## FAQ
 
 Some stuff you would want to know/read as a beginner.
