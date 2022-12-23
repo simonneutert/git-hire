@@ -93,9 +93,11 @@
           runs (per-page->runs total-user-count per-page)
           users (:items res)]
       (if (> total-user-count 1000)
-        (recur location lang (+ 2 more-repos-than))
+        (do (Thread/sleep (* 4 1000))
+            (recur location lang (+ 1 more-repos-than)))
         (if (> runs 1)
-          (recursive-user-search url runs users)
+          (do (prn "getting users with more than " more-repos-than " repos")
+              (recursive-user-search url runs users))
           users)))))
 
 (defn search-users-by-location-lang
@@ -105,21 +107,24 @@
 (defn search-users-by-location-rich
   "1000 total results is the current user limit"
   [location more-repos-than]
-  (let [per-page 50
-        more-repos-than more-repos-than
-        encoded-location (->utf8 location)
-        url (user-location-search-url per-page more-repos-than encoded-location)
-        res (get-json url)
-        total-user-count (:total_count res)
-        runs (per-page->runs total-user-count per-page)
-        users (:items res)]
-    (if (> total-user-count 1000)
-      (throw
-       (Exception. "Too many users, please use lang"))
-      (do (file-path-location-all location)
-          (if (> runs 1)
-            (recursive-user-search url runs users)
-            users)))))
+  (loop [location location
+         more-repos-than more-repos-than]
+    (let [per-page 50
+          more-repos-than more-repos-than
+          encoded-location (->utf8 location)
+          url (user-location-search-url per-page more-repos-than encoded-location)
+          res (get-json url)
+          total-user-count (:total_count res)
+          runs (per-page->runs total-user-count per-page)
+          users (:items res)]
+      (if (> total-user-count 1000)
+        (do (Thread/sleep (* 4 1000))
+            (recur location (+ 1 more-repos-than)))
+        (do (file-path-location-all location)
+            (if (> runs 1)
+              (do (prn "getting users with more than " more-repos-than " repos")
+                  (recursive-user-search url runs users))
+              users))))))
 
 (defn search-users-by-location
   [location]
@@ -221,14 +226,14 @@
   [location]
   (let [file-path (file-path-location-all location)
         users (search-users-by-location location)]
-    (prepare-user-data file-path users)))
+    (map #(prepare-user-data file-path %) (partition 100 100 nil users))))
 
 (defn save-profiles-location-lang
   "this will output the profiles matching into the `profiles` dir as formatted edn data"
   [location lang]
   (let [file-path (file-path-location-lang location lang)
         users (search-users-by-location-lang location lang)]
-    (prepare-user-data file-path users)))
+    (map #(prepare-user-data file-path %) (partition 100 100 nil users))))
 
 ;; entrypoint
 (let [search-term-location (first *command-line-args*)

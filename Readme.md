@@ -9,16 +9,18 @@ https://knowyourmeme.com/memes/this-is-fine
 
 ## Features
 
-- [x] up to 1000 users per city + language combination (sorted by most repositories)
+- [x] up to 1000 users per city + language combination (sorted by "users' public repositories count")
 - [x] if less than 1000 users in a city total, you can download by location only
 - [x] concurrency built-in 🚀
 
 ## planned features
 
-- [ ] get up to 3000 users (not just 1000) 
+- [ ] get all users (not just 1000)
   - implement automatic bucketing, sliding through the limits
+  - PROBLEM: GitHub sets the limit here 🥴
 - [ ] tests?! 🧌
-- [ ] speed isn't crucial, but utilizing some of `clojure.core.async` magic could speed things up 10x maybe :thinking:
+- [ ] sort by active last week? OR created in year?
+- [x] speed isn't crucial, but utilizing some of `clojure.core.async` magic could speed things up 10x maybe :thinking: `pmap` ftw 🎉
 
 ## Prerequisities
 
