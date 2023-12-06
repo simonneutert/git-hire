@@ -1,8 +1,22 @@
 # git hire! hire on 🔥!
 
-ever wondered who is coding what in your city and how to keep track of it, maybe `grep` projects by keyword?
+## 🚨 <!-- omit in toc -->
 
-this is your tool!
+> Bug with newer babashka version! 
+> **babashka 1.0.170** is the latest working version with this code.
+
+I hope to be working on the bug in early 2024 🤞  
+If you feel you can do it, help me migrate this project to the new `babashka.http-client` instead of `babashka.curl` by submitting a PR.  
+
+🩹⛑️ What I could quickly come up with is a super simple `Dockerfile`.  
+This way you can run it in a container, with the correct version of babashka pinned.
+For those needing help with Docker, I will add a section below very soon. Please be patient 🙏
+
+---
+
+Ever wondered who is coding what in your city and how to keep track of it, maybe `grep` projects by keyword?
+
+This is your tool! (babashka V1.0.170 mandatory)
 
 ![this is fine dog](https://i.kym-cdn.com/entries/icons/mobile/000/018/012/this_is_fine.jpg)  
 https://knowyourmeme.com/memes/this-is-fine
@@ -24,7 +38,7 @@ https://knowyourmeme.com/memes/this-is-fine
 
 ## Prerequisities
 
-- [babashka](https://www.babashka.org)
+- [babashka](https://www.babashka.org) **latest supported version for this code is currently 1.0.170**
 - GitHub API Token ([Personal Access Tokens](https://docs.github.com/en/rest/guides/getting-started-with-the-rest-api#using-personal-access-tokens))
 - Java doesn't hurt, too
 
