@@ -1,4 +1,16 @@
+(ns git-hire.main
+  (:require [clojure.string :as str]
+            [babashka.http-client :as http]
+            [cheshire.core :as json]
+            [babashka.fs :as fs]))
+
 (import [java.net URLEncoder])
+
+(defn pretty-spit
+  [file content]
+  (prn file)
+  (prn content)
+  (spit file (with-out-str (clojure.pprint/pprint content))))
 
 (def auth
   "Sets up the headers for requests
@@ -11,23 +23,60 @@
 (def base-url
   "https://api.github.com")
 
-(defn base-url-search-users
-  []
-  (str base-url "/search/users"))
+(def user-search-path
+  "/search/users")
 
-(defn get-json
-  "returns json as edn (keywordized)"
-  [url]
-  (let [req (curl/get url auth)]
-    (json/parse-string (:body req) true)))
+(defn ->utf8
+  [s]
+  (URLEncoder/encode s "UTF-8"))
 
-(defn file-path-profiles
-  []
+(defn get-json-with-params
+  "Searches for users in a given location"
+  [path query-params]
+  (let [url (str base-url path)
+        request-spec (merge auth query-params)]
+    (-> (http/get url request-spec)
+        :body
+        (json/parse-string true))))
+
+(defn sanitize-user-input
+  "Sanitizes user input"
+  [user-input]
+  (-> user-input
+      str/trim
+      str/lower-case
+      ->utf8))
+
+(defn add-outer-quotes
+  [s]
+  (str "\"" s "\""))
+
+(defn user-location-search-params-location
+  "hammers out the query params for user search location
+   the location needs to be wrapped in quotes"
+  [per-page more-repos-than location]
+  (let [location-str (add-outer-quotes (sanitize-user-input location))]
+    {:query-params {"per_page" per-page
+                    "q" (str "location:" location-str
+                             "+repos:" ">=" more-repos-than)}}))
+
+(defn user-location-search-params-location-lang
+  "hammers out the query params for user search location
+   the location needs to be wrapped in quotes"
+  [per-page more-repos-than location lang]
+  (let [location-str (add-outer-quotes (sanitize-user-input location))
+        lang-str (add-outer-quotes (sanitize-user-input lang))]
+    {:query-params {"per_page" per-page
+                    "q" (str "location:" location-str
+                             "+repos:" ">=" more-repos-than
+                             "+language:" lang-str)}}))
+
+(def file-path-profiles
   (str/lower-case "./profiles/"))
 
 (defn file-path-location
   [location]
-  (str (file-path-profiles) location))
+  (str file-path-profiles (str/lower-case location)))
 
 (defn file-path-location-lang
   [location lang]
@@ -44,37 +93,18 @@
 (defn recursive-user-search
   "user results are kept in :items keyword
    so it seems reasonable to have this in a non-generalised function"
-  [url runs existing-results]
+  [query-params runs existing-results]
   (loop [run 2
          results existing-results]
     (if (> run runs)
       results
-      (let [new-url (str url "&page=" run)
-            new-results (:items (get-json new-url))]
+      (let [res (get-json-with-params user-search-path query-params)
+            new-results (:items res)]
         (recur (inc run) (concat results new-results))))))
-
-(defn user-location-search-url
-  "hammers out the url for user search location"
-  [per-page more-repos-than encoded-location]
-  (str (base-url-search-users)
-       "?per_page=" per-page
-       "&q=location:" encoded-location
-       "+repos:" ">" more-repos-than))
-
-(defn user-location-language-search-url
-  "hammers out the url for user search location and language"
-  [per-page more-repos-than encoded-location encoded-lang]
-  (str
-   (user-location-search-url per-page more-repos-than encoded-location)
-   "+language:" encoded-lang))
 
 (defn per-page->runs
   [total divisor]
   (int (Math/ceil (double (/ total divisor)))))
-
-(defn ->utf8
-  [s]
-  (URLEncoder/encode s "UTF-8"))
 
 (defn search-users-by-location-lang-rich
   "1000 total results is the current user limit"
@@ -84,11 +114,8 @@
     lang lang
     more-repos-than more-repos-than]
     (let [per-page 50
-          more-repos-than more-repos-than
-          encoded-location (->utf8 location)
-          encoded-lang (->utf8 lang)
-          url (user-location-language-search-url per-page more-repos-than encoded-location encoded-lang)
-          res (get-json url)
+          q (user-location-search-params-location-lang per-page more-repos-than location lang)
+          res (get-json-with-params user-search-path q)
           total-user-count (:total_count res)
           runs (per-page->runs total-user-count per-page)
           users (:items res)]
@@ -97,7 +124,7 @@
             (recur location lang (+ 1 more-repos-than)))
         (if (> runs 1)
           (do (prn "getting users with more than " more-repos-than " repos")
-              (recursive-user-search url runs users))
+              (recursive-user-search q runs users))
           users)))))
 
 (defn search-users-by-location-lang
@@ -110,10 +137,8 @@
   (loop [location location
          more-repos-than more-repos-than]
     (let [per-page 50
-          more-repos-than more-repos-than
-          encoded-location (->utf8 location)
-          url (user-location-search-url per-page more-repos-than encoded-location)
-          res (get-json url)
+          q (user-location-search-params-location per-page more-repos-than location)
+          res (get-json-with-params user-search-path q)
           total-user-count (:total_count res)
           runs (per-page->runs total-user-count per-page)
           users (:items res)]
@@ -123,7 +148,7 @@
         (do (file-path-location-all location)
             (if (> runs 1)
               (do (prn "getting users with more than " more-repos-than " repos")
-                  (recursive-user-search url runs users))
+                  (recursive-user-search q runs users))
               users))))))
 
 (defn search-users-by-location
@@ -131,8 +156,12 @@
   (search-users-by-location-rich location 1))
 
 (defn repo-slim
+  [user-repo]
+  (select-keys user-repo [:html_url :name :description :homepage :topics :language :updated_at]))
+
+(defn repos-slim
   [user-repos]
-  (mapv #(select-keys % [:html_url :name :description :homepage :topics :language :updated_at]) user-repos))
+  (mapv repo-slim user-repos))
 
 (defn user-languages
   [user-repos]
@@ -143,51 +172,42 @@
 (defn user-with-clean-repos
   [user-repos]
   (let [first-repo (first user-repos)
-        cleaned-repos (repo-slim user-repos)]
+        cleaned-repos (repos-slim user-repos)]
     {:name (get-in first-repo [:owner :login])
      :owner_url (get-in first-repo [:owner :html_url])
      :languages (user-languages cleaned-repos)
      :repositories cleaned-repos}))
 
-(defn url-has-query?
-  [url]
-  (str/includes? url "?"))
-
-(defn url-add-query-param
-  [url k v]
-  (let [sign (if (url-has-query? url) "&" "?")]
-    (str url sign k "=" v)))
-
 (defn recursive-curl
   [url]
-  (loop [run 1
-         results []]
-    (let [page-url (url-add-query-param url "page" run)
-          res (get-json page-url)]
-      (if (= (count res) 0)
-        results
-        (recur (inc run) (concat results res))))))
+  (let [path (last (str/split url #"api.github.com"))
+        per-page 25]
+    (loop [run 1
+           results []]
+      (let [res (get-json-with-params path
+                                      {:query-params {"page" run
+                                                      "per_page" per-page
+                                                      "sort" "updated"
+                                                      "direction" "desc"}})]
+        (if (zero? (count res))
+          results
+          (recur (inc run) (concat results res)))))))
 
 (defn get-user-repos
   [user]
-  (let [per-page 25
-        {:keys [repos_url]} user
-        url (-> repos_url
-                (url-add-query-param  "sort" "updated")
-                (url-add-query-param "per_page" per-page))]
-    (if repos_url (recursive-curl url) nil)))
+  (let [{:keys [repos_url]} user
+        url repos_url]
+    (if url
+      (recursive-curl url)
+      nil)))
 
 (defn get-users-repos
   [users]
-  (pmap get-user-repos users))
+  (map get-user-repos users))
 
 (defn get-users-repos-without-forks
   [users]
-  (pmap remove-forks (get-users-repos users)))
-
-(defn pretty-spit
-  [file content]
-  (spit file (with-out-str (clojure.pprint/pprint content))))
+  (map remove-forks (get-users-repos users)))
 
 (defn build-rich-user
   [user user-data]
@@ -202,9 +222,8 @@
 
 (defn enrich-user-data
   [file-path users]
-  (pmap (fn [user]
-          (let [user-url (str base-url "/users/" (:name user))
-                user-data (get-json user-url)
+  (mapv (fn [user]
+          (let [user-data (get-json-with-params (str "/users/" (:name user)) {})
                 user-rich (build-rich-user user user-data)
                 name (:name user-rich)
                 file-name (str file-path name ".edn")]
@@ -217,28 +236,36 @@
   [file-path users]
   (->> users
        (get-users-repos-without-forks)
-       (pmap #(user-with-clean-repos %))
+       (mapv #(user-with-clean-repos %))
        (remove #(nil? (:name %)))
        (enrich-user-data file-path)))
+
+(defn print-profile-count-for-location
+  [profiles location]
+  (let [count (reduce + (map count profiles))]
+    (prn (str "Found " count " users in " location))))
 
 (defn save-profiles-location
   "this will output the profiles matching into the `profiles` dir as formatted edn data"
   [location]
   (let [file-path (file-path-location-all location)
-        users (search-users-by-location location)]
-    (map #(prepare-user-data file-path %) (partition 100 100 nil users))))
+        users (search-users-by-location location)
+        res (map #(prepare-user-data file-path %) (partition 10 10 nil users))]
+    (print-profile-count-for-location res location)
+    res))
 
 (defn save-profiles-location-lang
   "this will output the profiles matching into the `profiles` dir as formatted edn data"
   [location lang]
   (let [file-path (file-path-location-lang location lang)
         users (search-users-by-location-lang location lang)]
-    (map #(prepare-user-data file-path %) (partition 100 100 nil users))))
+    (mapv #(prepare-user-data file-path %) (partition 100 100 nil users))))
 
-;; entrypoint
-(let [search-term-location (first *command-line-args*)
-      search-term-lang (second *command-line-args*)]
-  (case (count *command-line-args*)
-    1 (save-profiles-location search-term-location)
-    2 (save-profiles-location-lang search-term-location search-term-lang)
-    :done))
+(defn -main
+  [& args]
+  (let [search-term-location (first args)
+        search-term-lang (second args)]
+    (case (count args)
+      1 (save-profiles-location search-term-location)
+      2 (save-profiles-location-lang search-term-location search-term-lang)
+      :done)))

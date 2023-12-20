@@ -1,10 +1,14 @@
-{:tasks
+{:paths ["src"]
+ :min-bb-version "1.1.171"
+ :tasks
  {:requires ([babashka.fs :as fs]
              [babashka.process :refer [process]]
              [clojure.string :as str]
              [clojure.edn :as edn])
+  scrape {:doc " Scrape all items from a user's profile "
+          :task git-hire.main/-main}
   search-keyword (let [search (first *command-line-args*)]
                    (->
-                    (str "grep -r -i -l " search " profiles")
+                    (str " grep -r -i -l " search " profiles ")
                     (babashka.process/process)
-                    :out slurp str/split-lines clojure.pprint/pprint))}}
+                    :out slurp str/split-lines clojure.pprint/pprint))}} "

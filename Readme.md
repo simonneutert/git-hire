@@ -1,26 +1,16 @@
 # git hire! hire on 🔥!
 
----
-
-## 🚨 Bug with newer babashka versions!<!-- omit in toc -->
-
-**babashka 1.0.170** is the latest working version with this code.
-
-I hope to be working on the bug in early 2024 🤞  
-The PR is here: [#2](https://github.com/simonneutert/git-hire/pull/2)
-
-🩹⛑️ What I could quickly come up with is a super simple `Dockerfile`.  
-This way you can run it in a container, with the correct version of babashka pinned.
-For those needing help with Docker, I will add a section below very soon. Please be patient 🙏
-
----
-
 Ever wondered who is coding what in your city and how to keep track of it, maybe `grep` projects by keyword?
 
 This is your tool! (babashka V1.0.170 mandatory)
 
 ![this is fine dog](https://i.kym-cdn.com/entries/icons/mobile/000/018/012/this_is_fine.jpg)  
 https://knowyourmeme.com/memes/this-is-fine
+
+## A word of warning regarding the current/newest version (main branch) 🧯
+
+I merged https://github.com/simonneutert/git-hire/pull/2 in, which requires the minimal babashka version to be `1.1.171` from now on.  
+I couldn't test the software very thoroughly, but it should work. 🤞
 
 ## Features
 
@@ -57,7 +47,7 @@ or have it in your `.zshrc` 🤗 or whatever your shell loads at start
 
 ### Download profiles
 
-`$ bb git-hire.clj <location-like-city-or-country>`  
+`$ bb scrape <location-like-city-or-country>`  
 
 Will save the github profiles as `.edn` into the `profiles` directory,  
 **but** as GitHub support let me know:  
@@ -65,7 +55,7 @@ Will save the github profiles as `.edn` into the `profiles` directory,
 
 Specify further adding a language:
 
-`$ bb git-hire.clj <location-like-city-or-country> <language>`
+`$ bb scrape <location-like-city-or-country> <language>`
 
 **Be warned!** This might not find a PHP dev who switched to Rust recently, as described by GitHub's Support.
 
@@ -77,11 +67,11 @@ After having built a pool of profiles, use
 
 #### examples
 
-`$ bb git-hire.clj mainz`  
-`$ bb git-hire.clj "Bad Schwalbach"`  
-`$ bb git-hire.clj wiesbaden java`  
-`$ bb git-hire.clj wiesbaden php`  
-`$ bb git-hire.clj mainz javascript`
+`$ bb scrape mainz`  
+`$ bb scrape "Bad Schwalbach"`  
+`$ bb scrape wiesbaden java`  
+`$ bb scrape wiesbaden php`  
+`$ bb scrape mainz javascript`
 
 ### Search in result files (saved profiles)
 
@@ -177,7 +167,7 @@ Some stuff you would want to know/read as a beginner.
 
 `pmap` and `curl` don't play well with each other in the shell (I guess).  
 Don't worry, run the tool from the shell:  
-`bb git-hire.clj berlin ruby`  
+`bb scrape berlin ruby`  
 it will fire up some threads 🔥
 
 ### CookBook Babashka
