@@ -1,12 +1,13 @@
 # git hire! hire on 🔥!
 
-## 🚨 <!-- omit in toc -->
+---
 
-> Bug with newer babashka version! 
-> **babashka 1.0.170** is the latest working version with this code.
+## 🚨 Bug with newer babashka versions!<!-- omit in toc -->
+
+**babashka 1.0.170** is the latest working version with this code.
 
 I hope to be working on the bug in early 2024 🤞  
-If you feel you can do it, help me migrate this project to the new `babashka.http-client` instead of `babashka.curl` by submitting a PR.  
+The PR is here: [#2](https://github.com/simonneutert/git-hire/pull/2)
 
 🩹⛑️ What I could quickly come up with is a super simple `Dockerfile`.  
 This way you can run it in a container, with the correct version of babashka pinned.
