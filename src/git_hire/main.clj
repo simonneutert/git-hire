@@ -17,7 +17,8 @@
    depending on a set ENV"
   (let [token (System/getenv "GITHUB_HIRE_TOKEN")
         bearer (str "Bearer " token)]
-    {:headers {"Accept" "application/vnd.github.v3+json"
+    {:headers {"Accept" "application/vnd.github.text-match+json"
+               "X-GitHub-Api-Version" "2022-11-28"
                "Authorization" bearer}}))
 
 (def base-url
@@ -58,7 +59,8 @@
   (let [location-str (add-outer-quotes (sanitize-user-input location))]
     {:query-params {"per_page" per-page
                     "q" (str "location:" location-str
-                             "+repos:" ">=" more-repos-than)}}))
+                             " "
+                             "repos:" ">=" more-repos-than)}}))
 
 (defn user-location-search-params-location-lang
   "hammers out the query params for user search location
@@ -68,8 +70,10 @@
         lang-str (add-outer-quotes (sanitize-user-input lang))]
     {:query-params {"per_page" per-page
                     "q" (str "location:" location-str
-                             "+repos:" ">=" more-repos-than
-                             "+language:" lang-str)}}))
+                             " "
+                             "repos:" ">=" more-repos-than
+                             " "
+                             "language:" lang-str)}}))
 
 (def file-path-profiles
   (str/lower-case "./profiles/"))
