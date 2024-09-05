@@ -2,7 +2,7 @@
 
 Ever wondered who is coding what in your city and how to keep track of it, maybe `grep` projects by keyword?
 
-This is your tool! (babashka V1.0.170 mandatory)
+This is your tool! (babashka >= 1.0.171 mandatory)
 
 ![this is fine dog](https://i.kym-cdn.com/entries/icons/mobile/000/018/012/this_is_fine.jpg)  
 https://knowyourmeme.com/memes/this-is-fine
@@ -29,7 +29,7 @@ I couldn't test the software very thoroughly, but it should work. 🤞
 
 ## Prerequisities
 
-- [babashka](https://www.babashka.org) **latest supported version for this code is currently 1.0.170**
+- [babashka](https://www.babashka.org) **latest supported version for this code is currently 1.0.171**
 - GitHub API Token ([Personal Access Tokens](https://docs.github.com/en/rest/guides/getting-started-with-the-rest-api#using-personal-access-tokens))
 - Java doesn't hurt, too
 
