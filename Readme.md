@@ -1,16 +1,55 @@
-# git hire! hire on 🔥!
+# git hire! hire on 🔥!<!-- omit from toc -->
 
 Ever wondered who is coding what in your city and how to keep track of it, maybe `grep` projects by keyword?
 
 This is your tool! (babashka >= 1.0.171 mandatory)
 
+## What is .edn? <!-- omit from toc -->
+
+EDN is a data format, like JSON, but more like Clojure's native data format.
+
+A result can look like this:
+
+```clojure
+{:name "Simon Neutert"
+ :hireable true
+ :languages ["HTML"]
+ :bio "I'm an HTML hacker."
+ :location "Area 50++"
+ :public-repos 123
+ :repos-url "https://api.github.com/users/simonneutert/repos"
+ :type "User"}
+```
+
+### Need JSON? <!-- omit from toc -->
+
+I can highly suggest [jet](https://github.com/borkdude/jet) for that.
+
+---
+
 ![this is fine dog](https://i.kym-cdn.com/entries/icons/mobile/000/018/012/this_is_fine.jpg)  
 https://knowyourmeme.com/memes/this-is-fine
 
-## A word of warning regarding the current/newest version (main branch) 🧯
+---
 
-I merged https://github.com/simonneutert/git-hire/pull/2 in, which requires the minimal babashka version to be `1.1.171` from now on.  
-I couldn't test the software very thoroughly, but it should work. 🤞
+- [Features](#features)
+- [planned features](#planned-features)
+- [Prerequisities](#prerequisities)
+- [Run](#run)
+  - [Run in Docker](#run-in-docker)
+  - [Download profiles](#download-profiles)
+    - [examples](#examples)
+  - [Search in result files (saved profiles)](#search-in-result-files-saved-profiles)
+    - [examples](#examples-1)
+  - [Inspect Profiles (with examples! 🤯)](#inspect-profiles-with-examples-)
+  - [Find juniors/new-joiners](#find-juniorsnew-joiners)
+- [FAQ](#faq)
+  - [Errors](#errors)
+  - [CookBook Babashka](#cookbook-babashka)
+  - [How to Clojure in VS Code](#how-to-clojure-in-vs-code)
+  - ["github-username.edn" what am I supposed to do with that? JSON would be much nicer!](#github-usernameedn-what-am-i-supposed-to-do-with-that-json-would-be-much-nicer)
+    - [transform to JSON](#transform-to-json)
+
 
 ## Features
 
@@ -44,6 +83,19 @@ or have it in your `.zshrc` 🤗 or whatever your shell loads at start
 🥳 happy times in the REPL
 
 ## Run
+
+### Run in Docker
+
+All of the following should work in Docker, too.
+
+The simplest way for you is to use the given Dockerfile.
+
+```bash
+$ docker build --build-arg github_hire_token=${GITHUB_HIRE_TOKEN} -t git-hire .
+$ docker run -it --rm git-hire
+```
+
+If you need to store the profiles, you can mount a docker volume, but this goes beyond the scope of this README.
 
 ### Download profiles
 
