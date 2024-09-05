@@ -12,7 +12,7 @@
            (map? main/auth)))
   (t/is (= true
            (map? (:headers main/auth))))
-  (t/is (= ["Accept" "Authorization"]
+  (t/is (= ["Accept" "X-GitHub-Api-Version" "Authorization"]
            (keys (:headers main/auth)))))
 
 (t/deftest utf8-conversion
@@ -115,9 +115,9 @@
                     :pizza "turtles"}])))))
 
 (t/deftest user-location-search-params-location
-  (t/is (= {:query-params {"per_page" 10, "q" "location:\"bad+kissingen\"+repos:>=0"}}
+  (t/is (= {:query-params {"per_page" 10, "q" "location:\"bad+kissingen\" repos:>=0"}}
            (main/user-location-search-params-location 10 0 "Bad Kissingen")))
-  (t/is (= {:query-params {"per_page" 20, "q" "location:\"mainz\"+repos:>=0"}}
+  (t/is (= {:query-params {"per_page" 20, "q" "location:\"mainz\" repos:>=0"}}
            (main/user-location-search-params-location 20 0 "Mainz"))))
 
 (t/deftest file-path-location-all
@@ -128,5 +128,5 @@
 
 (t/deftest user-location-search-params-location-lang
   (t/is (= {:query-params {"per_page" 10,
-                           "q" "location:\"bad+kissingen\"+repos:>=0+language:\"clojure\""}}
+                           "q" "location:\"bad+kissingen\" repos:>=0 language:\"clojure\""}}
            (main/user-location-search-params-location-lang 10 0 "Bad Kissingen" "clojure"))))
