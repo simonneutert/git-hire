@@ -27,6 +27,14 @@
 (def user-search-path
   "/search/users")
 
+(def default-sleep-time "30")
+
+(def sleep-time
+  (let [sleep-time (or
+                    (System/getenv "SLEEP_TIME_SECONDS")
+                    default-sleep-time)]
+    (* (Integer/parseInt sleep-time) 1000)))
+
 (defn ->utf8
   [s]
   (URLEncoder/encode s "UTF-8"))
@@ -124,7 +132,7 @@
           runs (per-page->runs total-user-count per-page)
           users (:items res)]
       (if (> total-user-count 1000)
-        (do (Thread/sleep (* 4 1000))
+        (do (Thread/sleep (* sleep-time 1000))
             (recur location lang (+ 1 more-repos-than)))
         (if (> runs 1)
           (do (prn "getting users with more than " more-repos-than " repos")
@@ -147,7 +155,7 @@
           runs (per-page->runs total-user-count per-page)
           users (:items res)]
       (if (> total-user-count 1000)
-        (do (Thread/sleep (* 4 1000))
+        (do (Thread/sleep (* sleep-time 1000))
             (recur location (+ 1 more-repos-than)))
         (do (file-path-location-all location)
             (if (> runs 1)
@@ -161,7 +169,7 @@
 
 (defn repo-slim
   [user-repo]
-  (select-keys user-repo [:html_url :name :description :homepage :topics :language :updated_at]))
+  (select-keys user-repo [:html_url :name :description :homepage :topics :language :stargazers_count :updated_at]))
 
 (defn repos-slim
   [user-repos]
@@ -180,6 +188,7 @@
     {:name (get-in first-repo [:owner :login])
      :owner_url (get-in first-repo [:owner :html_url])
      :languages (user-languages cleaned-repos)
+     :total-stars (reduce + (map :stargazers_count cleaned-repos))
      :repositories cleaned-repos}))
 
 (defn recursive-curl
