@@ -36,8 +36,10 @@ https://knowyourmeme.com/memes/this-is-fine
 - [planned features](#planned-features)
 - [Prerequisities](#prerequisities)
 - [Run](#run)
+  - [Configuration](#configuration)
+    - [Sleep time](#sleep-time)
   - [Run in Docker](#run-in-docker)
-  - [Download profiles](#download-profiles)
+  - [Run locally](#run-locally)
     - [examples](#examples)
   - [Search in result files (saved profiles)](#search-in-result-files-saved-profiles)
     - [examples](#examples-1)
@@ -84,6 +86,27 @@ or have it in your `.zshrc` 🤗 or whatever your shell loads at start
 
 ## Run
 
+Here's what you need to get the thing running.
+
+- [babashka](https://www.babashka.org) or Docker/Podman
+- Project Configuration (optional)
+
+### Configuration
+
+Currently, the only configuration you can do is setting sleep time between request cycles.
+
+#### Sleep time
+
+**DEFAULT** sleep time is 30 seconds.
+
+Increase the sleep time to avoid hitting the GitHub API rate limit.
+
+You can customise the sleep time between cycles by setting the `SLEEP_TIME_SECONDS` environment variable.
+
+```bash
+$ SLEEP_TIME_SECONDS=15 bb scrape <location-like-city-or-country> <language>
+```
+
 ### Run in Docker
 
 All of the following should work in Docker, too.
@@ -97,9 +120,11 @@ $ docker run -it --rm git-hire
 
 If you need to store the profiles, you can mount a docker volume, but this goes beyond the scope of this README.
 
-### Download profiles
+### Run locally
 
-`$ bb scrape <location-like-city-or-country>`  
+```bash
+$ bb scrape <location-like-city-or-country>
+```
 
 Will save the github profiles as `.edn` into the `profiles` directory,  
 **but** as GitHub support let me know:  
@@ -107,7 +132,9 @@ Will save the github profiles as `.edn` into the `profiles` directory,
 
 Specify further adding a language:
 
-`$ bb scrape <location-like-city-or-country> <language>`
+```bash
+$ bb scrape <location-like-city-or-country> <language>
+```
 
 **Be warned!** This might not find a PHP dev who switched to Rust recently, as described by GitHub's Support.
 
@@ -120,7 +147,7 @@ After having built a pool of profiles, use
 #### examples
 
 `$ bb scrape mainz`  
-`$ bb scrape "Bad Schwalbach"`  
+`$ bb scrape "Bad Kreuznach"`  
 `$ bb scrape wiesbaden java`  
 `$ bb scrape wiesbaden php`  
 `$ bb scrape mainz javascript`
@@ -137,19 +164,29 @@ After having built a pool of profiles, use
 
 you might go further, by piping to bb again, unimaginable possibilities...
 
-`$ mkdir rails; cp $(grep -Zril rails profiles) rails`
+```bash
+$ mkdir rails; cp $(grep -Zril rails profiles) rails
+```
 
-`$ bb search-keyword "ios" | bb -e '(map #(str/upper-case %) *input*)'`
+and then:
+
+```bash
+$ bb search-keyword "ios" | bb -e '(map #(str/upper-case %) *input*)'
+```
 
 ### Inspect Profiles (with examples! 🤯)
 
-`$ bb read-profile.clj simonneutert`
+```bash
+$ bb read-profile.clj simonneutert
+```
 
-go further, by piping
+go further, by piping:
 
-`$ bb read-profile.clj simonneutert | bb -e '(:languages *input*)'`
+```bash
+$ bb read-profile.clj simonneutert | bb -e '(:languages *input*)'
+```
 
-read many profiles
+then read many profiles
 
 ```bash
 $ bb search-keyword ruby | bb -e '(mapv #(edn/read-string (slurp %)) *input*)'

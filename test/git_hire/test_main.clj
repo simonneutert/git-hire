@@ -1,4 +1,7 @@
-(ns git-hire.test-main)
+(ns git-hire.test-main
+  (:require
+   [clojure.test :as t]))
+
 (require '[clojure.test :as t]
          '[babashka.classpath :as cp]
          '[git-hire.main :as main])
@@ -46,6 +49,7 @@
              :homepage "www.foo.bar"
              :topics ["foo" "bar"]
              :language "clojure"
+             :stargazers_count 10
              :updated_at "2020-01-01T00:00:00Z"}]
            (main/repos-slim [{:name "foo"
                               :html_url "bar"
@@ -68,6 +72,7 @@
             :homepage "www.foo.bar"
             :topics ["foo" "bar"]
             :language "clojure"
+            :stargazers_count 10
             :updated_at "2020-01-01T00:00:00Z"}
            (main/repo-slim {:name "foo"
                             :html_url "bar"
@@ -115,18 +120,18 @@
                     :pizza "turtles"}])))))
 
 (t/deftest user-location-search-params-location
-  (t/is (= {:query-params {"per_page" 10, "q" "location:\"bad+kissingen\" repos:>=0"}}
-           (main/user-location-search-params-location 10 0 "Bad Kissingen")))
+  (t/is (= {:query-params {"per_page" 10, "q" "location:\"bad+kreuznach\" repos:>=0"}}
+           (main/user-location-search-params-location 10 0 "Bad Kreuznach")))
   (t/is (= {:query-params {"per_page" 20, "q" "location:\"mainz\" repos:>=0"}}
            (main/user-location-search-params-location 20 0 "Mainz"))))
 
 (t/deftest file-path-location-all
   (t/is (= "./profiles/mainz/all/"
            (main/file-path-location-all "Mainz")))
-  (t/is (= "./profiles/bad kissingen/all/"
-           (main/file-path-location-all "Bad Kissingen"))))
+  (t/is (= "./profiles/bad kreuznach/all/"
+           (main/file-path-location-all "Bad Kreuznach"))))
 
 (t/deftest user-location-search-params-location-lang
   (t/is (= {:query-params {"per_page" 10,
-                           "q" "location:\"bad+kissingen\" repos:>=0 language:\"clojure\""}}
-           (main/user-location-search-params-location-lang 10 0 "Bad Kissingen" "clojure"))))
+                           "q" "location:\"bad+kreuznach\" repos:>=0 language:\"clojure\""}}
+           (main/user-location-search-params-location-lang 10 0 "Bad Kreuznach" "clojure"))))
